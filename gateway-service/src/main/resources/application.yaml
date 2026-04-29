@@ -3,7 +3,6 @@ spring:
     name: gateway-service
   profiles:
     active: dev
-  # --- 关键修改：添加 config.import ---
   config:
     import:
       - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
@@ -16,3 +15,17 @@ spring:
       discovery:
         server-addr: localhost:8848
         namespace: 85450399-ede9-41e8-9f43-a1ba43885e23
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/user/**
+        - id: article-service
+          uri: lb://article-service
+          predicates:
+            - Path=/article/**
