@@ -1,20 +1,18 @@
-# application.yml
-server:
-  port: 8091
-
 spring:
   application:
     name: user-service
+  # --- 关键修改：添加 config.import ---
   profiles:
     active: dev
+  config:
+    import:
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
   cloud:
     nacos:
       config:
         server-addr: localhost:8848
         file-extension: yaml
-        group: DEFAULT_GROUP # 可选
-        namespace: ff312079-65df-4f02-855f-b88bebfcce93 # 可选
+        namespace: 85450399-ede9-41e8-9f43-a1ba43885e23
       discovery:
         server-addr: localhost:8848
-        namespace: ff312079-65df-4f02-855f-b88bebfcce93 # 注册到cloud-dev命名空间下
-  # --- 关键：添加此行 ---
+        namespace: 85450399-ede9-41e8-9f43-a1ba43885e23

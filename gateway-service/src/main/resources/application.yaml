@@ -1,50 +1,18 @@
-# application.yml
-server:
-  port: 8088
-
 spring:
   application:
     name: gateway-service
   profiles:
     active: dev
+  # --- 关键修改：添加 config.import ---
+  config:
+    import:
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
   cloud:
     nacos:
       config:
         server-addr: localhost:8848
         file-extension: yaml
-        group: DEFAULT_GROUP # 可选
-        namespace: ff312079-65df-4f02-855f-b88bebfcce93 # 可选
+        namespace: 85450399-ede9-41e8-9f43-a1ba43885e23
       discovery:
         server-addr: localhost:8848
-        namespace: ff312079-65df-4f02-855f-b88bebfcce93 # 注册到cloud-dev命名空间下
-    gateway:
-      discovery:
-        locator:
-          enabled: true # 开启基于服务发现的自动路由，默认规则是 {serviceId}/** -> {serviceId}/*
-          lower-case-service-id: true # 将服务名转为小写，默认为 true
-      routes:
-        # --- 手动配置路由规则 (可选，如果开启了 locator，则下面的路由可能被覆盖或补充) ---
-        - id: user-service-route # 路由 ID，必须唯一
-          uri: lb://user-service # 转发目标，lb 表示使用负载均衡策略，指向服务名为 user-service 的服务
-          predicates: # 断言，满足条件才转发
-            - Path=/user/** # 当请求路径以 /user/ 开头时
-          filters: # 过滤器，可以对请求和响应进行处理
-            - StripPrefix=0 # 转发前不去掉路径的第一段，例如 /user/info -> /user/info
-        - id: article-service-route # 另一个路由示例
-          uri: lb://article-service
-          predicates:
-            - Path=/article/**
-          filters:
-            - StripPrefix=0
-        # ---
-      globalcors: # (可选) 全局跨域配置
-        cors-configurations:
-          '[/**]':
-            allowedOriginPatterns: "*"
-            allowedMethods: "*"
-            allowedHeaders: "*"
-            allowCredentials: true
-
-logging:
-  level:
-    org.springframework.cloud.gateway: DEBUG # 开启 Gateway 日志，便于调试路由
+        namespace: 85450399-ede9-41e8-9f43-a1ba43885e23

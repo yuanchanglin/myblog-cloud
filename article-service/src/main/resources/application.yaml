@@ -1,51 +1,18 @@
-# application.yml
-server:
-  port: 8092
-
 spring:
   application:
     name: article-service
   profiles:
     active: dev
+  # --- 关键修改：添加 config.import ---
+  config:
+    import:
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
   cloud:
     nacos:
       config:
         server-addr: localhost:8848
         file-extension: yaml
-        group: DEFAULT_GROUP # 可选
-        namespace: ff312079-65df-4f02-855f-b88bebfcce93 # 可选
+        namespace: 85450399-ede9-41e8-9f43-a1ba43885e23
       discovery:
         server-addr: localhost:8848
-        namespace: ff312079-65df-4f02-855f-b88bebfcce93 # 注册到cloud-dev命名空间下
-  # --- 关键：添加此行 ---
-
-
-
-feign:
-  client:
-    config:
-      default: # 全局默认配置
-        connectTimeout: 5000 # 连接超时时间
-        readTimeout: 10000  # 读取超时时间
-      user-service: # 针对 user-service 服务的特定配置
-        connectTimeout: 3000
-        readTimeout: 6000
-  # 开启负载均衡
-  loadbalancer:
-    enabled: true
-  # 启用 Resilience4j
-  circuitbreaker:
-    enabled: true # 开启 OpenFeign 的 Resilience4j 熔断支持
-
-# Resilience4j 配置
-resilience4j:
-  circuitbreaker:
-    instances:
-      user-service: # 与 Feign Client 的 name 一致
-        failure-rate-threshold: 50 # 失败率超过 50% 时开启熔断
-        minimum-number-of-calls: 5 # 开始计算失败率所需的最小调用次数
-        sliding-window-size: 10 # 滑动窗口大小 (包含调用和结果)
-        sliding-window-type: COUNT_BASED # 滑动窗口类型: COUNT_BASED (计数), TIME_BASED (时间)
-        wait-duration-in-open-state: 10s # 熔断器打开后等待多久进入半开状态
-        permitted-number-of-calls-in-half-open-state: 3 # 半开状态下允许的调用次数
-        automatic-transition-from-open-to-half-open-enabled: true # 是否自动从打开到半开
+        namespace: 85450399-ede9-41e8-9f43-a1ba43885e23
